@@ -62,11 +62,11 @@ using the small data model.
 
 In most situations, the above is all you need to know. You probably
 picked the 68000 to make your life easy, so enjoy skipping the rest of
-this chapter and move on to the next one.
+this chapter and move on to the next one!
 
 In certain situations, e.g. you need to interact with other
 applicatons, or if you are curious to know what is exactly going on,
-you can continue below.
+then you can continue below.
 
 The small code model limits the code size to somewhere in the range
 32K--64K and in rare situations a bit beyond that. It makes use of the
@@ -120,22 +120,27 @@ application grows you will probably want to put code outside of bank
 0, select the large code model for this.
 
 If you have more demands on data and want to place it outside bank 0
-the medium data model will take you a long way. It allocates static
+then the medium data model will take you a long way. It allocates static
 (global) variables in a single bank (other than 0) called the Near
-area. 64K is actually a lot of memory for static data. Data pointers
-are 24-bit (far) in this case so they can reach any location but are
+address space. 64K is actually a lot of memory for static data. Data pointers
+are 24-bit (far) in this case so they can reach any location, but are
 subject to not crossing 64K bank boundaries.
 
 In case you have more static data than can fit in the single 64K Near
-area, you can use the {\tt \_\_far} address space attribute on one or a
-few very large static objects.
+area, you can use the Far address space attribute on one or a
+few large static objects.
 
 The large and huge data models are mainly for very large applications
-and when you want to avoid using {\tt \_\_far} attribute and such
-completely. The size of the application grows additionally and
-performance will most likely suffer a bit, but it is an easy way to
-get large amount of data into the memory space of the 65816.
+or when you want to avoid using {\tt \_\_far} or {\tt \_\_huge}
+keywords completely. The size of the application grows additionally and
+performance will suffer a bit, but it is an easy way to get large
+amount of data into the memory space of the 65816.
 
+I will not get deeper into the 65816 like was done for the 68000 above
+as there are really a lot going on with the various data models on the
+65816 and it is not as likely that you need as deep understanding as
+there is less likely that you will need interopability with other code
+as there not as much existing code and tools for this processor.
 
 \subsection*{Address Spaces}
 
