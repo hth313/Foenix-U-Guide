@@ -1,18 +1,11 @@
 \chapter{Introduction}
 
-This manual is describes using the \foenix\ together with the Calypsi C
+This manual describes using the \foenix\ together with the Calypsi C
 tool chain. General use and available hardware features are described
 together with practical examples on how to do it from C.
 This manual does not attempt to describe the C programming language or
-the micro processor which is the heart of the \foenix\. You can choose
+the micro processor which is the heart of the \foenix. You can choose
 between the WDC 65816 on the C256U and the Motorola 68000 on the A2560U.
-
-\subsection*{A Note on Notation}
-
-Important side notes are called out with a black bar in the
-margin. These notes generally call out key differences between the
-different versions of the \foenix\ and may have some important
-considerations for applications that need to run on all versions.
 
 \section*{Further Reading}
 
@@ -54,7 +47,6 @@ memory architecture, which can be interesting. However, you may want
 to use the simpler 68000 which also can address up to 16MB, but which
 has an instruction set more suitable for handling larger applications.
 
-\begin{leftbar}
 \subsection*{65816}
 
 The WDC 65816 can be seen as a 16-bit update of the 6502 which saw
@@ -68,10 +60,8 @@ One thing you will most likely encounter when using the 65816,
 especially if the application grows to some size, is that you need to
 have some understanding of its way to address memory and use of
 banks.
-\end{leftbar}
 
 
-\begin{leftbar}
 \subsection*{68000}
 
 The Motorola 68000 may not need any introduction as it was used in a
@@ -102,7 +92,6 @@ C also retains a lot of low level control and is the standard language
 for interopability. It is very easy to reason about code performance
 when reading C code. There are no magic constructors or destructor
 functions that jumps in adding unpredictable overhead.
-\end{leftbar}
 
 \subsection*{Ports}
 
@@ -178,3 +167,50 @@ expansion RAM are separate from Vicky.
     \caption{F256jr Internal Architecture}
     \label{fig:arch}
 \end{figure}
+
+
+\section*{About Retro Programming}
+
+For some retro programming is about using old computers full time, all
+aspects of it. Modern retro machines are a way to get newly made old
+style machines, to have modern hardware that are more reliable than 30
+year old computers and perhaps some (perhaps modest) improvements in
+terms of speed and capabilities.
+
+If you are really kosher you program on the retro hardware itself and
+many wants to take this approach. This author, being a software
+developer and having used old computers like the Commodore 64, CP/M
+systems and the Amiga as the only computer, do not feel a need to
+return to that experience. The world has moved on in that aspect and
+that is mostly for the better.
+
+However, I want to make applications for retro computers, but I do not
+want to immerse myself in the limitations of such development
+workflow. I did that in the past and I moved on. Having a modern
+computer to work on means that it can be up running for months,
+provide multiple high resolution screens, really powerful editors,
+IDEs, source control systems, pushing code changes to cloud based
+storage with easy collaboration workflows, many choices of graphics
+software and other utilities.
+
+At the end of the day, it does not matter to me if my keyboard and
+modern flat screen happens to be attached to a modern computer when I
+work. It is just a screen and a keyboard. What matters is that I have
+a workflow that makes me productive and that I can actually run my
+creations on an actual retro computer.
+
+I think that using cross development provides the best of both worlds
+and when I stare at the computer screen, I could not care less about
+being kosher.
+
+That said, there is nothning right or wrong here and you may find
+another balance to work better for you.
+
+As mentioned, this guide is about programming the \foenix\ with the
+Calypsi C tool chain. The \foenix\ is an excellent small powerhouse
+for a reasonable cost. The Calypsi tool chain has support for it,
+provides a modern C experience and overall good performance. Its
+remote debugger allows for using different debugger user interfaces
+and run on the actual hardware with source debugging, stepping in the
+high level or assembly code and visualizing variables, memory and
+registers.

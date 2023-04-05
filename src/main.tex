@@ -23,6 +23,18 @@
 \newcommand{\foenix}{Foenix U}
 \newcommand{\microsec}{$\mu$s}
 \newcommand{\example}[1]{\subsection*{Example: #1}}
+
+\newlength{\Lnote}
+\newcommand{\notte}[1]
+     {\addtolength{\leftmargini}{4em}
+        \settowidth{\Lnote}{\textbf{Note:~}}
+        \begin{quote}
+            \rule{\dimexpr\textwidth-2\leftmargini}{1pt}\\
+                        \mbox{}\hspace{-\Lnote}\textbf{Note:~}%
+                                            #1\\[-0.5ex]
+            \rule{\dimexpr\textwidth-2\leftmargini}{1pt}
+        \end{quote}
+        \addtolength{\leftmargini}{-4em}}
 \begin{document}
 
 \begin{titlepage}
