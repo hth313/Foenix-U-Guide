@@ -1,0 +1,180 @@
+\chapter{Introduction}
+
+This manual is describes using the \foenix\ together with the Calypsi C
+tool chain. General use and available hardware features are described
+together with practical examples on how to do it from C.
+This manual does not attempt to describe the C programming language or
+the micro processor which is the heart of the \foenix\. You can choose
+between the WDC 65816 on the C256U and the Motorola 68000 on the A2560U.
+
+\subsection*{A Note on Notation}
+
+Important side notes are called out with a black bar in the
+margin. These notes generally call out key differences between the
+different versions of the \foenix\ and may have some important
+considerations for applications that need to run on all versions.
+
+\section*{Further Reading}
+
+Sadly I do not have any good recommendation on C books, at least not
+for learning the language itself. The ``C Programming Langauge'' by
+Kernighan and Ritchie is a classic, but appears to be out of print.
+Once you are familiar with the language ``C A Reference Manual'' by
+Harbison and Steele is a very good book which explains aspects of the
+language in great detail, but it is a reference manual and not a book
+that attempts to teach you C.
+For a more in depth study of C lore and related things ``Deep C
+Secrets'' by Linden is a good read.
+
+The author has never really read any books about assembly
+language. Instead I pick up the processor manual from the the
+manufacturer (Western Design Center or Motorola in this case) and keep
+it handy.
+
+If you feel you need more, there should be scans of old books related
+to 68000 assembly language that can be found at
+\url{https://archive.org/search?query=68000}.
+For the 65816 there is an excellent article at
+\url{http://www.6502.org/tutorials/65c816opcodes.html} as well as
+various resources related to the SNES (Super Nintendo Entertainment
+System) console.
+
+The source code examples in this text can be found at GitHub. They are
+as mentioned written for the Calypsi C compiler but can most likely be
+adapted to another C compiler if desired.
+
+\section*{About the Machine}
+
+Depending on the actual \foenix\ machine you have there will be either
+a 65816 or 68000 processor on it. Which one to choose is mostly a
+matter of taste. The 65816 has a lot of similarity to the well known
+6502, but is a 16-bit variant with up the 16MB addressing
+capability. For larger applications you will need to deal with the
+memory architecture, which can be interesting. However, you may want
+to use the simpler 68000 which also can address up to 16MB, but which
+has an instruction set more suitable for handling larger applications.
+
+\begin{leftbar}
+\subsection*{65816}
+
+The WDC 65816 can be seen as a 16-bit update of the 6502 which saw
+some, but limited use, back in the days. Most noteably it was used by
+the SNES and the Apple IIgs.
+
+It is a fairly well designed instruction set with some quirks, mostly
+caused by enforcing backwards binary compatibility with the 6502.
+
+One thing you will most likely encounter when using the 65816,
+especially if the application grows to some size, is that you need to
+have some understanding of its way to address memory and use of
+banks.
+\end{leftbar}
+
+
+\begin{leftbar}
+\subsection*{68000}
+
+The Motorola 68000 may not need any introduction as it was used in a
+variety of computers from the mid 1980 up until mid 1990. The
+instruction set is to a large degree inspired by the vernerable
+PDP-11, but uses twice as many 32-bit registers rather than 16-bit that
+was provided by the PDP-11.
+
+It can be argued that the 68000 is a 16/32 bit microprocessor, but in
+reality it is a 16-bit from a hardware standpoint with a 32-bit
+programming model.
+
+During the 8-bit era it was sometimes talk about the 16-bit generation that
+was supposed to come after, but that was in reality leapfrogged thanks
+to the 68000.
+
+Memory addressing on the 680000 uses a very simple flat addressing
+model. There are no segmentation, no 64K banks or anything like that,
+only a simple flat memory range.
+
+Code density of the 68000 is one of the best of all time. The 68000
+assembly language is easy to read and easy to program with.
+However, even if you like assembly language, many people opt for
+programming it in the C language for the faster development, good code
+performance and portability.
+
+C also retains a lot of low level control and is the standard language
+for interopability. It is very easy to reason about code performance
+when reading C code. There are no magic constructors or destructor
+functions that jumps in adding unpredictable overhead.
+\end{leftbar}
+
+\subsection*{Ports}
+
+The connectors of the back of the \foenix\ from left to right are\dots
+
+\begin{description}
+    \item[Audio Line Out] the stereo audio output. These are standard RCA style line level outputs.
+
+    \item[SD Card Slot] for standard SD cards for storage of files and applications.
+
+    \item[DVI Monitor Port] for output to your monitor. This can be connected to the DVI input of a monitor or run through a simple DVI-VGA connector to use with an older VGA input.
+
+    \item[Serial Port] standard 3-wire serial port, capable of speeds
+      up to 115200 with built in buffers.
+\end{description}
+
+\begin{figure}[ht]
+    \begin{center}
+%        \includegraphics[scale=0.75]{images/f256_render_annotated_back.pdf}
+    \end{center}
+    \caption{F256jr Rear Connectors}
+    \label{fig:rear}
+\end{figure}
+
+The top of the board has several connectors and other features that should be explained (see figure:~\ref{fig:top}):
+
+\begin{description}
+    \item[Power In] this is a standard 12V round plug.
+
+    \item[Debug USB Port] this provides access to the debug interface
+      of the A2056U for a desktop computer. You can use it to upload
+      data to the A2560U's memory or examine the memory. This is done
+      via the Mini USB B connector on the side. This port can also be
+      used to reprogram the FPGA.
+
+    \item[Case Buttons and LEDs] this collection of headers is used to connect the power and reset button from the case as well as the power LED and SD access LED.
+
+    \item[Joystick Ports] these connectors allow you to plug in Atari style joysticks
+
+    \item[DIP Switches] these switches allow you to manage certain aspects of the \foenix. In particular, you can control gamma correction and some boot options, depending on the kernel installed.
+
+    \item[Stereo SIDs] out of the box, these will be bare sockets, but they are where you would install your SID chips or SID emulators. The sockets support the original 6581, the lower voltage 8581, and the different replacements like the SwinSID, ARMSID, and BackSID.
+
+    \item[Expansion Port] for future expansion.
+
+    \item[Clock Battery] this CR2032 cell holder provides power for the real time clock chip.
+
+    \item[Headphone Out] this is a standard headphone adapter port that can be used if the case does not provide headphone output.
+\end{description}
+
+\begin{figure}[ht]
+    \begin{center}
+%        \includegraphics[scale=0.55]{images/f256_render_annotated_top.pdf}
+    \end{center}
+    \caption{F256jr Top View}
+    \label{fig:top}
+\end{figure}
+
+\subsection*{System Architecture}
+
+For being so small, the \foenix\ has a lot of components to it, so it
+is worth mapping out the over all structure of the computer. One of
+the main things to note is that most of what makes the \foenix\ the
+\foenix\ is the FPGA Vicky II. Vicky provides the various text and
+graphics engines, most of the I/O devices, controllers for the sound
+chips, and the DMA controller. The CPU, RTC, flash memory and
+expansion RAM are separate from Vicky.
+
+\begin{figure}[ht]
+    \begin{center}
+%        \includegraphics[scale=0.55]{images/f256jr_layout.pdf}
+    \end{center}
+    \caption{F256jr Internal Architecture}
+    \label{fig:arch}
+\end{figure}

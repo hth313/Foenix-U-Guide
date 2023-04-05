@@ -1,0 +1,172 @@
+\chapter{Memory Management}
+
+The \foenix\ comes with 4MB of RAM and 2MB of read-only flash
+memory. In addition there is an additional 2MB of video RAM accessible by
+Vicky.
+The flash memory is used by the MCP kernel, or possibly other
+operating systems.
+
+Vicky can accesses memory at a much higher speed compared to the
+processor and periodically needs to compose the video output. The
+design prevents the processor from stealing cycles or do similar
+tricks. To allow the processor to access video memory a FIFO (which is
+a transition buffer) and DMA (which is a bulk transfer transaction)
+are provided.
+
+\section*{Memory Models}
+
+In general, imposing no restrictions for how much memory can be data
+allows it to be arbitrary large and only restricted by the amount of
+addressable memory. While making it simple to program such model, it
+often results in inefficient use of the instruction set which means
+your application grows larger and that it runs slower.
+
+An example can be that there is an addressing mode that allow for fast
+access to a restricted memory area, which typically can be 256 bytes
+or 64K large, even if the actual memory is significantly larger,
+e.g. 16MB.
+
+In the C compiler this is expressed as a data model. A data model sets
+rules for how to access memory and is often designed from the
+instruction set perspective. The idea is to balance fast access to
+memory combined with small size of the application. Depending of the
+amount and structure of the needed data, you can select a model that
+suits your needs. If the needs change during development, the compiler
+can be configured to use a different data model to make the best use
+of the capabilities of the processor. In essence, you can with a
+simple command line setting cause the compiler to perform access to
+memory using a potentially very different strategy. If you compare
+this to writing your application in assembly language, you would need
+to make changes potentially all over the place, with the compiler you
+change a setting.
+
+The compiler provides both code and data models suited to take full
+advantage of the processor. These can be configured independently.
+
+\subsection*{On the 68000}
+
+The 68000 is fairly simple when it code and data models. There are two
+code models provided and three data models.
+
+As a rule of thumb, for small applications, you will normally use the
+small code and small data models. As your program grows you may need
+to switch to the large code model, but you can in most cases keep
+using the small data model.
+
+In most situations, the above is all you need to know. You probably
+picked the 68000 to make your life easy, so enjoy skipping the rest of
+this chapter and move on to the next one.
+
+In certain situations, e.g. you need to interact with other
+applicatons, or if you are curious to know what is exactly going on,
+you can continue below.
+
+The small code model limits the code size to somewhere in the range
+32K--64K and in rare situations a bit beyond that. It makes use of the
+16-bit relative branches to jump between functions. If you get range
+errors from the linker, you can solve it by switching to the large
+code model which inserts absolute jumps that can reach any function
+from any point. This will cause the code size of the applications to
+grow a little bit and function calls will take a tiny amount of extra
+time.
+
+The small data model makes use of a base pointer in one of the address
+registers. This register is named {\tt A4} and is permanently set
+aside for this purpose. Static (global) variables are accessed based
+on using this base pointer. This saves two bytes of application size
+for each direct access to such variable and it executes faster
+compared to the alternative absolute addressing. This limits the size
+of all such static variables to 64K in the application.
+
+Even though the small data model limites static data to 64K,
+addressing memmory is still done using 32-bit pointers. This means
+that you can have the small data model and make exceptions to it using
+the {\tt \_\_far} address space keyword. Data allocated from the heap are
+also also not affected by the 64K limitation.
+As a result you can often keep using the small data model and get its
+benefits even if your total data is significantly larger.
+
+When do you not want to use the small data model you may ask. Well, in
+general there are two situations. If you have very many small static
+data objects it may be simpler to use the far-only data model. It may
+also be easier to use the far-only model if you interact with other
+applications and pass control back and forth. Such application will
+most likely not be able to share the {\tt A4} base register with your
+application. There are ways to mitigate this at interaction points,
+but in general it may be easier to just avoid using the {\tt A4} base
+pointer and get another data register for general use.
+
+The final data model is the large data model, it is a mix between the
+two in that it behaves as far-only but assumes that the {\tt A4} base
+pointer is also set up in case use use the Near data attribute. It is
+mostly provided for completeness and real world use-cases for it are
+probably far between.
+
+\subsection*{On the 65816}
+
+There are several data models on the Calypsi C for 65816 and two code
+models.
+
+As a rule of thumb, for small applications that can reside inside the
+first 64K (bank 0), use the small code and data models. As your
+application grows you will probably want to put code outside of bank
+0, select the large code model for this.
+
+If you have more demands on data and want to place it outside bank 0
+the medium data model will take you a long way. It allocates static
+(global) variables in a single bank (other than 0) called the Near
+area. 64K is actually a lot of memory for static data. Data pointers
+are 24-bit (far) in this case so they can reach any location but are
+subject to not crossing 64K bank boundaries.
+
+In case you have more static data than can fit in the single 64K Near
+area, you can use the {\tt \_\_far} address space attribute on one or a
+few very large static objects.
+
+The large and huge data models are mainly for very large applications
+and when you want to avoid using {\tt \_\_far} attribute and such
+completely. The size of the application grows additionally and
+performance will most likely suffer a bit, but it is an easy way to
+get large amount of data into the memory space of the 65816.
+
+
+\subsection*{Address Spaces}
+
+This section is if you want to understand address spaces and how they
+related to data models more in depth. Feel free to skip this section
+for now as you will most likely be able to do a lot of application
+programming without understanding this in great detail. Should you
+ever need this, you will most likely realize when it is time to dive
+into this.
+
+An /address space/ is a memory area that can be addressed in a
+particular way. This can describe a specific limited memory area,
+e.g. a single 64K area. It can also be larger area that is broken up
+in segments, e.g. multiple 64K areas, the whole memory, video memory
+or something else.
+
+All address spaces has an associated memory attribute or keyword which
+can be used to modify a pointer type to describe a particular address
+space. How code is generated to access an address space is what the
+data model is all about. While address spaces makes it possible to do
+it, the data model is what makes it easy to use address spaces.
+
+Thus, a data model is a set of rules for how to apply address spaces
+by default in a given situation. One example can be that if we access
+a static (absolute addressed) variable, we assume a certain address
+space. Passing a pointer around may actually may mean it is described
+by another address space, it can be the same address space or one that
+is more general, perhaps even allowing the access to the full memory
+range.
+
+If this still sounds complicated, rest assured that the compiler knows
+the rules and will assist to get it right by the means of either
+implicit conversion rules that are applied when needed, or it will
+request explicit conversions when that is required.
+
+The selected data model is a way to describe the needs on memory your
+application has and thereby minimize the amount of visible address
+space attributes. The general idea is that you seldom should have to use
+explicit address space attributes. If you find that you make use of many
+such attributes, it is probably a sign that you should think about
+switching to another data model.
